@@ -19,6 +19,7 @@ namespace BlabberApp.DomainTest
             Assert.AreEqual(actual, expected);
         }
 
+        [TestMethod]
         public void TestSetGetUserId()
         {
             //arrange
@@ -29,6 +30,17 @@ namespace BlabberApp.DomainTest
             string actual = harness.UserID;
             //assert
             Assert.AreEqual(actual, expected);
+        }
+
+        [TestMethod]
+        public void TestGetSysId()
+        {
+            Blab harness = new Blab();
+            //string expected = "";
+            //act & assert
+            Assert.IsInstanceOfType(harness.getSysId(), typeof(string));
+            //his way:
+            //Assert.AreEqual(true, harness.getSysId() is string);
         }
 
     }
