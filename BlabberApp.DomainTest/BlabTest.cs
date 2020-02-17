@@ -24,23 +24,22 @@ namespace BlabberApp.DomainTest
         {
             //arrange
             Blab harness = new Blab();
-            string expected = "e7200232-aad5-4521-8075-034825f7f76f";
-            harness.UserID = "e7200232-aad5-4521-8075-034825f7f76f";
-            //act
+            string expected = "foobar@example.com";
+            harness.UserID = "foobar@example.com";
+            //Act
             string actual = harness.UserID;
-            //assert
             Assert.AreEqual(actual, expected);
-        }
+         }
 
         [TestMethod]
         public void TestGetSysId()
         {
             Blab harness = new Blab();
-            //string expected = "";
+            string expected = harness.getSysId();
             //act & assert
+            string actual = harness.getSysId();
+            Assert.AreEqual(actual, expected);
             Assert.IsInstanceOfType(harness.getSysId(), typeof(string));
-            //his way:
-            //Assert.AreEqual(true, harness.getSysId() is string);
         }
 
     }
