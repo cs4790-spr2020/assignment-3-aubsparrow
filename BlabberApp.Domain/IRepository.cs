@@ -6,8 +6,8 @@ namespace BlabberApp.Domain
     {
         T Add<T>(T item) where T : BaseDatum;
         void Delete<T>(T item) where T : BaseDatum;
-        List<T> GetAll<T>(ISpecification<T> spec = null) where T : BaseDatum;
+        List<BaseDatum> GetAll<T>() where T : BaseDatum;
         T GetByID<T>(string sysId) where T : BaseDatum;
-        void Update <T> (T item) where T : BaseDatum;
+        void Update <T> (T oldItem, T newItem) where T : BaseDatum;
     }
 }
