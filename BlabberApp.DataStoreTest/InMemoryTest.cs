@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using BlabberApp.Domain;
 using BlabberApp.DataStore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlabberApp.DataStoreTest
 
@@ -10,66 +11,26 @@ namespace BlabberApp.DataStoreTest
     [TestClass]
     public class InMemoryTest
     {
-        [TestMethod]
-        public void TestAdd()
+        private InMemory<Blab> harness;
+        public InMemoryTest()
         {
-            //act
-            BaseDatum assert = new BaseDatum();
-            InMemory mem = new InMemory();
-            string expected = assert.getSysId();
-            //arrange
-            mem.Add(assert);
-            //assert
-            CollectionAssert.Contains(mem.Items, assert);
+            var options = new DbContextOptionsBuilder<ApplicationContext>().UseInMemoryDatabase(databaseName: "addBlabs").Options;
+            harness = new InMemory<Blab>(new ApplicationContext(options));
         }
 
         [TestMethod]
-        public void TestDelete()
+        public void TestAddAndGetByID()
         {
-            BaseDatum assert = new BaseDatum();
-            InMemory mem = new InMemory();
-            string expected = assert.getSysId();
-            mem.Add(assert);
-            mem.Delete(assert);
-            CollectionAssert.DoesNotContain(mem.Items, assert);
-        }
+            Blab expected = new Blab();
+            expected.UserID = "foobar@example.com";
+            expected.Message = "Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit...";
+            string sysID = expected.getSysId();
+            harness.Add(expected);
 
-        [TestMethod]
-        public void TestGetById()
-        {
-            BaseDatum expected = new BaseDatum();
-            InMemory mem = new InMemory();
-            mem.Add(expected);
-            string id = expected.getSysId();
-            BaseDatum actual = mem.GetByID<BaseDatum>(id);
+            Blab actual =  harness.GetByUserID("foobar@example.com");
+            
             Assert.AreEqual(expected, actual);
         }
 
-        [TestMethod]
-        public void TestGetAll()
-        {
-            List<BaseDatum> expectedList = new List<BaseDatum>();
-            BaseDatum dat1 = new BaseDatum();
-            BaseDatum dat2 = new BaseDatum();
-            BaseDatum dat3 = new BaseDatum();
-            InMemory mem = new InMemory();
-            mem.Add(dat1);
-            mem.Add(dat2);
-            mem.Add(dat3);
-            expectedList.Add(dat1);
-            expectedList.Add(dat2);
-            expectedList.Add(dat3);
-            CollectionAssert.AreEqual(expectedList, mem.GetAll<BaseDatum>());
-        }
-
-        [TestMethod]
-        public void TestUpdate()
-        {
-            BaseDatum originalItem = new BaseDatum();
-            InMemory mem = new InMemory();
-            mem.Add(originalItem);
-            BaseDatum newItem = new BaseDatum();
-            mem.Update(originalItem, newItem);
-        }
     }
 }

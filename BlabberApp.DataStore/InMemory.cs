@@ -2,57 +2,77 @@
 using System.Collections;
 using BlabberApp.Domain;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BlabberApp.DataStore
 {
-    public class InMemory : IRepository
+    public class InMemory<T> : IRepository<T> where T : BaseDatum
     {
 
-        private List<BaseDatum> _items;
-        public List<BaseDatum> Items
+        //private List<BaseDatum> _items;
+        private ApplicationContext context;
+
+        //replaces List, to use entity framework
+        private DbSet<T> _entities;
+        public DbSet<T> Entities
         {
             get
             {
-                return this._items;
+                return this._entities;
             }
         }
 
-        public InMemory()
+        public InMemory(ApplicationContext ContextIn)
         {
-            this._items = new List<BaseDatum>();
+            //this._items = new List<BaseDatum>();
+            context = ContextIn;
+            this._entities = context.Set<T>();
         }
 
-        public T Add<T>(T item) where T : BaseDatum
+        public T Add(T item)
         {
-            this._items.Add(item);
+            this._entities.Add(item);
             return item;
         }
 
-        public void Delete<T>(T item) where T : BaseDatum
+        public void Delete(T item)
         {
-            this._items.Remove(item);
+            this._entities.Remove(item);
             return;
         }
 
-        public T GetByID<T>(string sysId) where T : BaseDatum
+        public T GetByID(string sysId)
         {
-            int index = this._items.FindIndex(item => item.getSysId() == sysId);
-            //Console.WriteLine("for now returns items at 0, needs helper method");
-            return (T)this._items[index];
+            if(sysId == "")
+            {
+                throw new ArgumentNullException("sysId null");    
+            }
+            return this._entities.SingleOrDefault(s => s.getSysId() == sysId);
         }
 
-        public List<BaseDatum> GetAll<T>() where T : BaseDatum
+        public T GetByUserID(string userId)
         {
-            return this._items;
+            if(userId == "")
+            {
+                throw new ArgumentNullException("user id null");
+            }
+            return this._entities.Find(userId);
         }
 
-        public void Update <T> (T oldItem, T newItem) where T : BaseDatum
+        public IEnumerable<T> GetAll()
         {
-            int index = this._items.FindIndex(itemInList => itemInList == oldItem);
-            this._items[index] = newItem;
-            return;
+            return this._entities.AsEnumerable();
         }
 
+        public void Update (T item)
+        {
+            if(item == null)
+            {
+                throw new ArgumentNullException("item to update null");
+            }
+            context.SaveChanges();
+        }
 
         // public bool Create(IDatum datum)
         // {
