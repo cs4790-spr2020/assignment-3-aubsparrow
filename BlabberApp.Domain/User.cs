@@ -6,36 +6,23 @@ namespace BlabberApp.Domain
 {
     public class User : BaseDatum
     {
-        private DateTime _regDTTM;
-        public DateTime RegDTTM
-        {
-            get { return this._regDTTM; }
-            set { this._regDTTM = value; }
-        }
+        public DateTime RegisterDTTM{get; set;}
+        public DateTime LastLoginDTTM{get; set;}
+        public string Email {get; private set;}
 
-        private DateTime _lastLoginDTTM;
-        public DateTime LastLoginDTTM
+        public void ChangeEmail(string email)
         {
-            get { return this._lastLoginDTTM; }
-            set { this._lastLoginDTTM = value; }
-        }
-
-        private string _userId;
-        public string UserID
-        {
-            get { return this._userId; }
-            set
+            if (string.IsNullOrWhiteSpace(email) || email.Length > 50)
+                throw new FormatException("Email Invalid");
+            try
             {
-                try
-                {
-                    MailAddress m = new MailAddress(value);
-                    this._userId = value;
-                }
-                catch (FormatException)
-                {
-                    throw new FormatException("not an email");
-                }
+                MailAddress m = new MailAddress(email); 
             }
+            catch (FormatException)
+            {
+                throw new FormatException("Email Invalid");
+            }
+            Email = email;
         }
     }
 

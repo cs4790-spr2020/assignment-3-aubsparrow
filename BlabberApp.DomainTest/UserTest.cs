@@ -8,14 +8,14 @@ namespace BlabberApp.DomainTest
     public class UserTest
     {
         [TestMethod]
-        public void TestSetGetUserID_Success()
+        public void TestSetEmail_Success()
         {
             //arragne
             User harness = new User();
             string expected = "foobar@example.com";
-            harness.UserID = "foobar@example.com";
+            harness.ChangeEmail("foobar@example.com");
             //act
-            string actual = harness.UserID;
+            string actual = harness.Email;
             Assert.AreEqual(actual, expected);
         }
 
@@ -25,20 +25,20 @@ namespace BlabberApp.DomainTest
             //arrange
             User harness = new User();
             //act
-            var ex = Assert.ThrowsException<FormatException>(() => harness.UserID = "foobar");
+            var ex = Assert.ThrowsException<FormatException>(() => harness.ChangeEmail("foobar"));
             //assert
-            Assert.AreEqual("not an email", ex.Message);
+            Assert.AreEqual("Email Invalid", ex.Message);
         }
 
         [TestMethod]
         public void TestGetUserID_Fail_1()
         {
-            //arrange
-            User harness = new User();
-            //act
-            var ex = Assert.ThrowsException<FormatException>(() => harness.UserID = "example.com");
-            //assert
-            Assert.AreEqual("not an email", ex.Message);
+             // Arrange
+            User harness = new User(); 
+            // Act
+            var ex = Assert.ThrowsException<FormatException>(() => harness.ChangeEmail("foobar.example"));
+            // Assert
+            Assert.AreEqual("Email Invalid", ex.Message.ToString());
         }
 
          [TestMethod]
